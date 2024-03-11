@@ -1,6 +1,6 @@
 -- ReloadUI
 -- Made by Sharpedge_Gaming
--- v1.1 - 10.2.5
+-- v2.1 - 10.2.5
 
 local function CreateGameMenuButton()
     local button = CreateFrame("Button", "GameMenuButtonReloadButton", GameMenuFrame, "GameMenuButtonTemplate")
@@ -23,6 +23,37 @@ local function CreateGameMenuButton()
     end
 end
 
+local function CreateGarbageCollectionButton()
+    local gcButton = CreateFrame("Button", "GameMenuButtonGarbageCollection", GameMenuFrame, "GameMenuButtonTemplate")
+    gcButton:SetText("Collect Garbage")
+    gcButton:SetScript("OnClick", function()
+        -- Measure memory usage before garbage collection
+        local memoryBefore = collectgarbage("count")
+
+        -- Perform garbage collection
+        collectgarbage("collect")
+
+        -- Measure memory usage after garbage collection
+        local memoryAfter = collectgarbage("count")
+
+        -- Calculate the difference (memory freed)
+        local memoryFreed = memoryBefore - memoryAfter
+
+        -- Play sound for feedback
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+
+        -- Print or display the amount of memory freed
+        print(string.format("Garbage collection performed. Memory freed: %.2f KB", memoryFreed))
+    end)
+    
+    -- Position the button just below the last added button
+    gcButton:SetPoint("TOP", GameMenuButtonReloadButton, "BOTTOM", 0, -16)
+    gcButton:SetSize(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
+
+    -- Adjust GameMenuFrame's height to accommodate the new button
+    GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + gcButton:GetHeight() + 16)
+end
+
 local function CreateSettingsPanelButton()
     local button = CreateFrame("Button", "SettingsPanelReloadUI", SettingsPanel, "UIPanelButtonTemplate")
     button:SetText("RELOAD UI")
@@ -38,6 +69,8 @@ end
 local function InitializeButtons()
     CreateGameMenuButton()
     CreateSettingsPanelButton()
+	CreateGameMenuButton()
+    CreateGarbageCollectionButton()
 end
 
 local eventFrame = CreateFrame("Frame")
