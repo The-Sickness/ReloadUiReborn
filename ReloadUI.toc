@@ -1,11 +1,9 @@
-## Interface: 100205
+## Interface: 110002
 ## Title: ReloadUI
 ## Author: Sharpedge_Gaming
-## Version: v.2.0
+## Version: v.2.2
 ## Notes: Reload button for the game Menu
 ## IconTexture: 975742 
-
-
 
 
 ReloadUI.lua
