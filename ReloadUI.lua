@@ -1,11 +1,11 @@
 -- Made by Sharpedge_Gaming
--- v2.2 - 11.0.2
+-- v2.5 - 11.1.0
 
 local function CreateGameMenuButton()
     local button = CreateFrame("Button", "GameMenuButtonReloadButton", GameMenuFrame, "GameMenuButtonTemplate")
     button:SetText("Reload UI")
     
-    button:SetSize(200, 30)  
+    button:SetSize(200, 28)  
     
     button:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_LOGOUT)
@@ -18,11 +18,11 @@ local function CreateGameMenuButton()
         GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + 25)
 
         if GameMenuButtonLogout then
-            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315)  
+            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279)  
             GameMenuButtonLogout:ClearAllPoints()
             GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)  
         else
-            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315)
+            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279)
         end
     end)
 end
