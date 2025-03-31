@@ -1,5 +1,5 @@
 -- Made by Sharpedge_Gaming
--- v2.7 - 11.1.0
+-- v2.7 - 11.1.5
 
 local function CreateGameMenuButton()
     local button = CreateFrame("Button", "GameMenuButtonReloadButton", GameMenuFrame, "GameMenuButtonTemplate")
@@ -22,7 +22,7 @@ local function CreateGameMenuButton()
             GameMenuButtonLogout:ClearAllPoints()
             GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)  
         else
-            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315)
+            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279)
         end
     end)
 end
