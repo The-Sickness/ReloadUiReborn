@@ -1,28 +1,36 @@
 -- Made by Sharpedge_Gaming
--- v2.7 - 11.1.5
+-- Version for 11.1.0 and 11.1.5
+
+local function GetGameVersion()
+    local version = GetBuildInfo() -- Returns "major.minor.patch.build"
+    local major, minor, patch = string.match(version, "^(%d+)%.(%d+)%.(%d+)")
+    return tonumber(major), tonumber(minor), tonumber(patch)
+end
 
 local function CreateGameMenuButton()
     local button = CreateFrame("Button", "GameMenuButtonReloadButton", GameMenuFrame, "GameMenuButtonTemplate")
     button:SetText("Reload UI")
-    
-    button:SetSize(200, 28)  
-    
+    button:SetSize(200, 28)
     button:SetScript("OnClick", function()
         PlaySound(SOUNDKIT.IG_MAINMENU_LOGOUT)
         ReloadUI()
     end)
-	
-	 button:GetFontString():SetFont(STANDARD_TEXT_FONT, 15) 
-
+    button:GetFontString():SetFont(STANDARD_TEXT_FONT, 15)
+    
+    local major, minor, patch = GetGameVersion()
     GameMenuFrame:HookScript("OnShow", function()
         GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + 25)
-
+        
         if GameMenuButtonLogout then
-            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279)  
-            GameMenuButtonLogout:ClearAllPoints()
-            GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)  
-        else
             button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279)
+            GameMenuButtonLogout:ClearAllPoints()
+            GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)
+        else
+            if major == 11 and minor == 1 and patch == 0 then
+                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315) -- 11.1.0 behavior
+            else
+                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279) -- 11.1.5 or newer behavior
+            end
         end
     end)
 end
@@ -52,6 +60,8 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         self:UnregisterEvent("ADDON_LOADED")
     end
 end)
+
+
 
 
 
