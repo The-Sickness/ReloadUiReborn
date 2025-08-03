@@ -27,9 +27,9 @@ local function CreateGameMenuButton()
             GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)
         else
             if major == 11 and minor == 1 and patch == 0 then
-                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315) -- 11.1.0 behavior
+                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -280) -- 11.1.0 behavior
             else
-                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279) -- 11.1.5 or newer behavior
+                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315) -- All other versions behavior
             end
         end
     end)
