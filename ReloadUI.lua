@@ -1,13 +1,23 @@
 -- Made by Sharpedge_Gaming
--- Version for 11.1.0 and 11.1.5
+--  11.2
 
-local function GetGameVersion()
-    local version = GetBuildInfo() -- Returns "major.minor.patch.build"
-    local major, minor, patch = string.match(version, "^(%d+)%.(%d+)%.(%d+)")
-    return tonumber(major), tonumber(minor), tonumber(patch)
+local function IsElvUILoaded()
+    if C_AddOns and C_AddOns.IsAddOnLoaded then
+        return C_AddOns.IsAddOnLoaded("ElvUI")
+    elseif IsAddOnLoaded then
+        return IsAddOnLoaded("ElvUI")
+    end
+    return false
 end
 
-local function CreateGameMenuButton()
+local function PlaceReloadUIButton()
+    -- Remove old button if it exists (avoid stacking)
+    if GameMenuButtonReloadButton then
+        GameMenuButtonReloadButton:Hide()
+        GameMenuButtonReloadButton:SetParent(nil)
+        GameMenuButtonReloadButton = nil
+    end
+
     local button = CreateFrame("Button", "GameMenuButtonReloadButton", GameMenuFrame, "GameMenuButtonTemplate")
     button:SetText("Reload UI")
     button:SetSize(200, 28)
@@ -16,26 +26,50 @@ local function CreateGameMenuButton()
         ReloadUI()
     end)
     button:GetFontString():SetFont(STANDARD_TEXT_FONT, 15)
-    
-    local major, minor, patch = GetGameVersion()
-    GameMenuFrame:HookScript("OnShow", function()
-        GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + 25)
-        
-        if GameMenuButtonLogout then
-            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279)
-            GameMenuButtonLogout:ClearAllPoints()
-            GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)
+
+    local isElvUI = IsElvUILoaded()
+
+    if GameMenuButtonLogout then
+        button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -115)
+        GameMenuButtonLogout:ClearAllPoints()
+        GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -1)
+    else
+        if isElvUI then
+            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -347)
         else
-            if major == 11 and minor == 1 and patch == 0 then
-                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315) -- 11.1.0 behavior
-            else
-                button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -279) -- 11.1.5 or newer behavior
-            end
+            button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -315)
         end
-    end)
+    end
 end
 
+local function TryHookGameMenu()
+    if GameMenuFrame then
+        if not GameMenuFrame.__ReloadUIHooked then
+            GameMenuFrame:HookScript("OnShow", PlaceReloadUIButton)
+            GameMenuFrame.__ReloadUIHooked = true
+        end
+    else
+        C_Timer.After(0.1, TryHookGameMenu)
+    end
+end
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("ADDON_LOADED")
+f:RegisterEvent("PLAYER_LOGIN")
+f:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1 == "ElvUI" or arg1 == "ReloadUI" then
+            C_Timer.After(0.1, TryHookGameMenu)
+        end
+    elseif event == "PLAYER_LOGIN" then
+        C_Timer.After(0.1, TryHookGameMenu)
+    end
+end)
+
+-- SettingsPanel button logic 
 local function CreateSettingsPanelButton()
+    if SettingsPanelReloadUI then return end 
+
     local button = CreateFrame("Button", "SettingsPanelReloadUI", SettingsPanel, "UIPanelButtonTemplate")
     button:SetText("RELOAD UI")
     button:SetSize(96, 22)
@@ -47,49 +81,12 @@ local function CreateSettingsPanelButton()
     end)
 end
 
-local function InitializeButtons()
-    CreateGameMenuButton()
-    CreateSettingsPanelButton()
-end
-
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("ADDON_LOADED")
-eventFrame:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == "ReloadUI" then
-        C_Timer.After(0.1, InitializeButtons)
+-- SettingsPanel hook
+local sf = CreateFrame("Frame")
+sf:RegisterEvent("ADDON_LOADED")
+sf:SetScript("OnEvent", function(self, event, arg1)
+    if arg1 == "ReloadUI" then
+        C_Timer.After(0.1, CreateSettingsPanelButton)
         self:UnregisterEvent("ADDON_LOADED")
     end
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
