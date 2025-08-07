@@ -29,6 +29,11 @@ local function PlaceReloadUIButton()
 
     local isElvUI = IsElvUILoaded()
 
+    -- ElvUI skinning
+    if isElvUI and ElvUI and ElvUI[1] and ElvUI[1].Skins and ElvUI[1].Skins.HandleButton then
+        ElvUI[1].Skins:HandleButton(button)
+    end
+
     if GameMenuButtonLogout then
         button:SetPoint("TOPLEFT", GameMenuFrame, "TOPLEFT", 28, -115)
         GameMenuButtonLogout:ClearAllPoints()
@@ -66,7 +71,7 @@ f:SetScript("OnEvent", function(self, event, arg1)
     end
 end)
 
--- SettingsPanel button logic 
+-- SettingsPanel button logic
 local function CreateSettingsPanelButton()
     if SettingsPanelReloadUI then return end 
 
@@ -79,6 +84,11 @@ local function CreateSettingsPanelButton()
         ReloadUI()
         HideUIPanel(InterfaceOptionsFrame)
     end)
+
+    -- ElvUI skinning for SettingsPanel button
+    if IsElvUILoaded() and ElvUI and ElvUI[1] and ElvUI[1].Skins and ElvUI[1].Skins.HandleButton then
+        ElvUI[1].Skins:HandleButton(button)
+    end
 end
 
 -- SettingsPanel hook
